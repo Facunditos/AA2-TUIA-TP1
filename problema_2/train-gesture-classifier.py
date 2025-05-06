@@ -21,7 +21,8 @@ def mostrar_balanceo(etiquetas):
     plt.title('Balanceo del dataset: frecuencia por categoría')
     plt.yticks(ticks=[0,1,2],labels=['tijera','pidra','papel'])
     plt.xlabel('Frecuencia')
-    plt.show()
+    plt.savefig('fig_balanceo_clases_taget')
+    plt.show(block=False)
 
 def dividir_datos(X,y):
     X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=132)
@@ -83,7 +84,8 @@ class NeuralNetwork:
         plt.legend(loc='upper right')
         plt.suptitle('Evolución del accuracy y de la pérdida en entrenamiento y validación en función a las épocas')
         plt.tight_layout()
-        plt.show()
+        plt.savefig('./fig_desempeño_modelo_entrenado')
+        plt.show(block=False)
     def evaluate(self):
         loss, accuracy = self.model.evaluate(self.X_test, self.y_test)
         return accuracy
@@ -102,7 +104,8 @@ def comparar_accuracies(**kwargs):
     plt.bar(x_plot,y_plot)
     for i in range(len(x_plot)):
         plt.text(i, y_plot[i], y_plot[i])  # Placing text slightly above the bar
-    plt.show()
+    plt.savefig('fig_accuracies')
+    plt.show(block='False')
 
 features_path = './rps_dataset.npy'
 target_path = './rps_labels.npy'
