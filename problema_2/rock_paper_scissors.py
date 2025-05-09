@@ -13,13 +13,12 @@ def capturar_imagen():
     # reading the input using the camera 
     result, image = cam.read() 
     # If image will detected without any error, 
-    if result: 
-        # saving image in local storage 
-        cv2.imwrite("./imagenes_prueba_modelo/imagen_prueba_1.png", image) 
+    if result:  
         return image
     # If captured image is corrupted, moving to else part 
     else: 
         print("No image detected. Please! try again") 
+
 
 def extraer_coordenadas(imagen)->list|None:
     # Inicializar MediaPipe para detección de manos
@@ -44,12 +43,13 @@ def extraer_coordenadas(imagen)->list|None:
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return coordenadas_imagen
-    
+
+
 def etiquetar_coordenadas(coordenadas_landmarks):
     # El reshape obedece a que el modelo predice sobre un array de numpy de dos dimensiones
     coordenadas_landmarks = np.array(coordenadas_landmarks).reshape((-1,42))
     # Cargar el modelo desde el archivo .h5
-    rps_nn = tf.keras.models.load_model('rps_nn.h5')
+    rps_nn = tf.keras.models.load_model('./rps_nn.h5')
     # Mostrar un resumen del modelo para verificar que se ha cargado correctamente
     print('Resumen del modelo utilizado para la predicción')
     rps_nn.summary()
@@ -57,6 +57,7 @@ def etiquetar_coordenadas(coordenadas_landmarks):
     cod_etiqueta = np.argmax(probabilidades)
     prob_etiqueta = probabilidades[cod_etiqueta]
     return cod_etiqueta,prob_etiqueta
+
 
 def decodificar_etiqueta(etiqueta:str)->int:
     cod_etiquetas = {
@@ -66,6 +67,7 @@ def decodificar_etiqueta(etiqueta:str)->int:
     }
     return cod_etiquetas[etiqueta]    
 
+
 def mostrar_resultados(imagen,etiqueta_predicha:str,prob):
     marca_tiempo = str(datetime.now()).split('.')[0]
     marca_tiempo = marca_tiempo.replace('-','').replace(' ','').replace(':','')
@@ -74,6 +76,7 @@ def mostrar_resultados(imagen,etiqueta_predicha:str,prob):
     plt.imshow(imagen)
     plt.title(f'Predicción: {etiqueta_predicha.capitalize()}\nConfianza: {confianza}%')
     plt.savefig(f'./imagenes_prueba_modelo/prueba-{marca_tiempo}.jpg')
+    print(marca_tiempo)
     plt.show()
 
 img = capturar_imagen()
@@ -81,3 +84,4 @@ coordenadas_landmarks = extraer_coordenadas(img)
 cod_etiqueta_predicha,prob_etiqueta_predicha = etiquetar_coordenadas(coordenadas_landmarks)
 etiqueta_predicha = decodificar_etiqueta(cod_etiqueta_predicha)
 mostrar_resultados(imagen=img,etiqueta_predicha=etiqueta_predicha,prob=prob_etiqueta_predicha)
+
